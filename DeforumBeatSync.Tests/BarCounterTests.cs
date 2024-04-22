@@ -7,6 +7,7 @@ public class BarCounterTests
 {
     private readonly Mock<IFileReader> _fileReaderMock = new();
     private readonly Mock<IFrameParser> _frameParserMock = new();
+    private readonly Mock<IBarTypeResolver> _barTypeResolverMock = new();
 
     [Fact]
     public async Task GetBars_ByDefault_ReturnsBars()
@@ -254,14 +255,9 @@ public class BarCounterTests
         
         _fileReaderMock.Setup(x => x.ReadFile(It.IsAny<string>())).ReturnsAsync("");
         _frameParserMock.Setup(x => x.ReadFrames(It.IsAny<string>())).Returns(frames);
-        
-        var settings = new Settings
-        {
-            BarFrameCount = 48
-        };
-        
+
         var subject = GetSubject();
-        var bars = (await subject.GetBars("fake.txt", settings)).ToList();
+        var bars = (await subject.GetBars("fake.txt")).ToList();
 
         var sb = new StringBuilder();
         foreach (var bar in bars)
@@ -284,7 +280,7 @@ public class BarCounterTests
         Assert.Equal(36, bars.ElementAt(0).Beats.ElementAt(3).Frame);
         
         // Bar 2
-        Assert.Equal(48, bars.ElementAt(1).Beats.ElementAt(0).Frame);
+        Assert.Equal(47, bars.ElementAt(1).Beats.ElementAt(0).Frame);
         Assert.Equal(59, bars.ElementAt(1).Beats.ElementAt(1).Frame);
         Assert.Equal(70, bars.ElementAt(1).Beats.ElementAt(2).Frame);
         Assert.Equal(81, bars.ElementAt(1).Beats.ElementAt(3).Frame);
@@ -294,10 +290,22 @@ public class BarCounterTests
         Assert.Equal(104, bars.ElementAt(2).Beats.ElementAt(1).Frame);
         Assert.Equal(115, bars.ElementAt(2).Beats.ElementAt(2).Frame);
         Assert.Equal(126, bars.ElementAt(2).Beats.ElementAt(3).Frame);
+        
+        // Bar 119
+        Assert.Equal(5664, bars.ElementAt(118).Beats.ElementAt(0).Frame);
+        Assert.Equal(5675, bars.ElementAt(118).Beats.ElementAt(1).Frame);
+        Assert.Equal(5686, bars.ElementAt(118).Beats.ElementAt(2).Frame);
+        Assert.Equal(5698, bars.ElementAt(118).Beats.ElementAt(3).Frame);
+        
+        // Bar 120
+        Assert.Equal(5709, bars.ElementAt(119).Beats.ElementAt(0).Frame);
+        Assert.Equal(5720, bars.ElementAt(119).Beats.ElementAt(1).Frame);
+        Assert.Equal(5736, bars.ElementAt(119).Beats.ElementAt(2).Frame);
+        Assert.Equal(5747, bars.ElementAt(119).Beats.ElementAt(3).Frame);
     }
 
     private BarCounter GetSubject()
     {
-        return new BarCounter(_fileReaderMock.Object, _frameParserMock.Object);
+        return new BarCounter(_fileReaderMock.Object, _frameParserMock.Object, _barTypeResolverMock.Object);
     }
 }

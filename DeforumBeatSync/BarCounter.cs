@@ -2,66 +2,66 @@
 
 public interface IBarCounter
 {
-    Task<IEnumerable<Bar>> GetBars(string file, Settings settings);
+    Task<IEnumerable<Bar>> GetBars(string file);
 }
 
 public class BarCounter : IBarCounter
 {
     private readonly IFileReader _fileReader;
     private readonly IFrameParser _frameParser;
+    private readonly IBarTypeResolver _barTypeResolver;
 
     public BarCounter(
         IFileReader fileReader,
-        IFrameParser frameParser)
+        IFrameParser frameParser,
+        IBarTypeResolver barTypeResolver)
     {
         _fileReader = fileReader;
         _frameParser = frameParser;
+        _barTypeResolver = barTypeResolver;
     }
     
-    public async Task<IEnumerable<Bar>> GetBars(string file, Settings settings)
+    public async Task<IEnumerable<Bar>> GetBars(string file)
     {
         var fileContents = await _fileReader.ReadFile(file);
         var frames = _frameParser.ReadFrames(fileContents).ToList();
+
+        return DetermineBars(frames);
+    }
+
+    private List<Bar> DetermineBars(List<FrameValue> allFrames)
+    {
+        const int eighthNoteFrameCount = Settings.QuarterNoteFrameCount / 2;
+        
         var bars = new List<Bar>();
-
-        var totalBarCount = frames.Count / settings.BarFrameCount;
-        var barStart = 0;
-        var barEnd = settings.BarFrameCount - 1;
-
-        for (int b = 0; b < totalBarCount; b++)
+        var beats = new List<FrameValue>();
+        var barNumber = 1;
+        
+        for (int frameIndex = 0; frameIndex < allFrames.Count; frameIndex += Settings.QuarterNoteFrameCount)
         {
-            if (b > 0)
-            {
-                barStart += settings.BarFrameCount;
-                barEnd = barStart + settings.BarFrameCount - 1;
-            }
-
-            var frameStart = barStart;
-            var frameEnd = barEnd;
-            var topBeats = frames
-                .Where(f => f.Frame >= frameStart && f.Frame <= frameEnd)
+            var minFrameNumber = frameIndex - eighthNoteFrameCount;
+            var maxFrameNumber = (frameIndex + Settings.QuarterNoteFrameCount) - eighthNoteFrameCount;
+            var quarterNote = allFrames
+                .Where(f => f.Frame >= minFrameNumber && f.Frame <= maxFrameNumber)
                 .OrderByDescending(f => f.Value)
-                .Take(4)
-                .OrderBy(bar => bar.Frame)
-                .ToList();
-
-            var barType = BarType.UNKNOWN;
-            if (double.Round(topBeats.Sum(beat => beat.Value), 0) == 0)
-            {
-                barType = BarType.BREAKDOWN;
-            } else if (topBeats.Average(beat => beat.Value) >= 0.5)
-            {
-                barType = BarType.CHORUS;
-            }
-
+                .Take(1)
+                .Single();
+            
+            beats.Add(quarterNote);
+            
+            if (beats.Count != 4) 
+                continue;
+            
             bars.Add(new Bar
             {
-                Number = b + 1,
-                Type = barType,
-                Beats = topBeats
+                Number = barNumber,
+                Type = _barTypeResolver.GetType(beats),
+                Beats = beats.ToList()
             });
+            beats.Clear();
+            barNumber++;
         }
-
+        
         return bars;
     }
 }

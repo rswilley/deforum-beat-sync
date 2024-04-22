@@ -1,10 +1,10 @@
 ﻿namespace DeforumBeatSync;
 
-public class Settings
+public static class Settings
 {
-    public required int BarFrameCount { get; set; }
-    public int HalfNoteBarFrameCount => BarFrameCount / 2;
-    public int QuarterNoteBarFrameCount => BarFrameCount / 4;
-    public double StrengthHigh { get; set; }
-    public double StrengthLow { get; set; }
+    public const int BarFrameCount = 48;
+    public const int HalfNoteFrameCount = BarFrameCount / 2;
+    public const int QuarterNoteFrameCount = BarFrameCount / 4;
+    public const double StrengthHigh = 0.8;
+    public const double StrengthLow = 0.35;
 }
