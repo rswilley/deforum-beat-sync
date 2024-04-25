@@ -4,7 +4,7 @@ namespace DeforumBeatSync.Tests;
 
 public class FrameParserTests
 {
-    private readonly Mock<IFileReader> _fileReaderMock = new();
+    private readonly Mock<IFileAdapter> _fileReaderMock = new();
     
     [Fact]
     public void ReadFile_ByDefault_ReturnParsedFrames()
@@ -15,11 +15,12 @@ public class FrameParserTests
         _fileReaderMock.Setup(x => x.ReadFile(It.IsAny<string>())).ReturnsAsync(fileContents);
         
         var subject = GetSubject();
-        var results = subject.ReadFrames("fake.txt").ToList();
+        var results = subject.ReadFrames(fileContents);
         
-        Assert.Equal(48, results.Count());
-        Assert.Equal(0, results.ElementAt(0).Frame);
-        Assert.Equal(0.00d, results.ElementAt(0).Value);
+        Assert.Equal(48, results.Count);
+        Assert.Equal(0, results.ElementAt(0).Key);
+        Assert.Equal(0, results.ElementAt(0).Value.FrameNumber);
+        Assert.Equal(0.00d, results.ElementAt(0).Value.FrameValue);
     }
 
     private static FrameParser GetSubject()

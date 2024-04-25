@@ -7,47 +7,50 @@ public interface IBarCounter
 
 public class BarCounter : IBarCounter
 {
-    private readonly IFileReader _fileReader;
+    private readonly IFileAdapter _fileAdapter;
     private readonly IFrameParser _frameParser;
     private readonly IBarTypeResolver _barTypeResolver;
 
     public BarCounter(
-        IFileReader fileReader,
+        IFileAdapter fileAdapter,
         IFrameParser frameParser,
         IBarTypeResolver barTypeResolver)
     {
-        _fileReader = fileReader;
+        _fileAdapter = fileAdapter;
         _frameParser = frameParser;
         _barTypeResolver = barTypeResolver;
     }
     
     public async Task<IEnumerable<Bar>> GetBars(string file)
     {
-        var fileContents = await _fileReader.ReadFile(file);
-        var frames = _frameParser.ReadFrames(fileContents).ToList();
+        var fileContents = await _fileAdapter.ReadFile(file);
+        var frames = _frameParser.ReadFrames(fileContents);
 
         return DetermineBars(frames);
     }
 
-    private List<Bar> DetermineBars(List<FrameValue> allFrames)
+    private List<Bar> DetermineBars(Dictionary<int, FrameSetting> allFrames)
     {
         const int eighthNoteFrameCount = Settings.QuarterNoteFrameCount / 2;
         
         var bars = new List<Bar>();
-        var beats = new List<FrameValue>();
+        var beats = new List<Beat>();
         var barNumber = 1;
         
         for (int frameIndex = 0; frameIndex < allFrames.Count; frameIndex += Settings.QuarterNoteFrameCount)
         {
             var minFrameNumber = frameIndex - eighthNoteFrameCount;
             var maxFrameNumber = (frameIndex + Settings.QuarterNoteFrameCount) - eighthNoteFrameCount;
-            var quarterNote = allFrames
-                .Where(f => f.Frame >= minFrameNumber && f.Frame <= maxFrameNumber)
-                .OrderByDescending(f => f.Value)
+            var quarterNoteFrame = allFrames
+                .Where(f => f.Key >= minFrameNumber && f.Key <= maxFrameNumber)
+                .OrderByDescending(f => f.Value.FrameValue)
                 .Take(1)
                 .Single();
             
-            beats.Add(quarterNote);
+            beats.Add(new Beat
+            {
+                FrameSetting = quarterNoteFrame.Value
+            });
             
             if (beats.Count != 4) 
                 continue;
@@ -70,5 +73,15 @@ public class Bar
 {
     public int Number { get; set; }
     public BarType Type { get; set; }
-    public IEnumerable<FrameValue> Beats { get; set; }
+    public IEnumerable<Beat> Beats { get; set; }
+}
+
+public class Beat
+{
+    public FrameSetting FrameSetting { get; set; }
+    
+    public bool IsKick()
+    {
+        return FrameSetting.FrameValue >= 0.2;
+    }
 }

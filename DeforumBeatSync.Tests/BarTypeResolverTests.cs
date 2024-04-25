@@ -5,27 +5,39 @@ public class BarTypeResolverTests
     [Fact]
     public void GetType_BarIsBreakdown_ReturnBreakdown()
     {
-        var beats = new List<FrameValue>
+        var beats = new List<Beat>
         {
             new()
             {
-                Frame = 1,
-                Value = 0.14
+                FrameSetting = new FrameSetting
+                {
+                    FrameNumber = 1,
+                    FrameValue = 0.14   
+                },
             },
             new()
             {
-                Frame = 2,
-                Value = 0.13
+                FrameSetting = new FrameSetting
+                {
+                    FrameNumber = 2,
+                    FrameValue = 0.13   
+                }
             },
             new()
             {
-                Frame = 3,
-                Value = 0.13
+                FrameSetting = new FrameSetting
+                {
+                    FrameNumber = 3,
+                    FrameValue = 0.13   
+                }
             },
             new()
             {
-                Frame = 4,
-                Value = 0.12
+                FrameSetting = new FrameSetting
+                {
+                    FrameNumber = 4,
+                    FrameValue = 0.12   
+                }
             }
         };
         
@@ -38,27 +50,39 @@ public class BarTypeResolverTests
     [Fact]
     public void GetType_BarIsBuildup_ReturnBuildup()
     {
-        var beats = new List<FrameValue>
+        var beats = new List<Beat>
         {
             new()
             {
-                Frame = 1,
-                Value = 0.14
+                FrameSetting = new FrameSetting
+                {
+                    FrameNumber = 1,
+                    FrameValue = 0.14   
+                },
             },
             new()
             {
-                Frame = 2,
-                Value = 0.13
+                FrameSetting = new FrameSetting
+                {
+                    FrameNumber = 2,
+                    FrameValue = 0.13   
+                }
             },
             new()
             {
-                Frame = 3,
-                Value = 0.13
+                FrameSetting = new FrameSetting
+                {
+                    FrameNumber = 3,
+                    FrameValue = 0.13   
+                }
             },
             new()
             {
-                Frame = 4,
-                Value = 0.12
+                FrameSetting = new FrameSetting
+                {
+                    FrameNumber = 4,
+                    FrameValue = 0.12   
+                }
             }
         };
         

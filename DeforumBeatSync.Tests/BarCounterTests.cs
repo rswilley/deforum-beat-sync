@@ -5,7 +5,7 @@ namespace DeforumBeatSync.Tests;
 
 public class BarCounterTests
 {
-    private readonly Mock<IFileReader> _fileReaderMock = new();
+    private readonly Mock<IFileAdapter> _fileReaderMock = new();
     private readonly Mock<IFrameParser> _frameParserMock = new();
     private readonly Mock<IBarTypeResolver> _barTypeResolverMock = new();
 
@@ -264,7 +264,7 @@ public class BarCounterTests
         {
             foreach (var beat in bar.Beats)
             {
-                sb.Append($"{bar.Type} - {beat.Frame}: ({beat.Value}), ");
+                sb.Append($"{bar.Type} - {beat.FrameSetting.FrameNumber}: ({beat.FrameSetting.FrameValue}), ");
             }
 
             sb.AppendLine();
@@ -274,34 +274,34 @@ public class BarCounterTests
         
         Assert.Equal(1, bars.ElementAt(0).Number);
         // Bar 1
-        Assert.Equal(2, bars.ElementAt(0).Beats.ElementAt(0).Frame);
-        Assert.Equal(14, bars.ElementAt(0).Beats.ElementAt(1).Frame);
-        Assert.Equal(25, bars.ElementAt(0).Beats.ElementAt(2).Frame);
-        Assert.Equal(36, bars.ElementAt(0).Beats.ElementAt(3).Frame);
+        Assert.Equal(2, bars.ElementAt(0).Beats.ElementAt(0).FrameSetting.FrameNumber);
+        Assert.Equal(14, bars.ElementAt(0).Beats.ElementAt(1).FrameSetting.FrameNumber);
+        Assert.Equal(25, bars.ElementAt(0).Beats.ElementAt(2).FrameSetting.FrameNumber);
+        Assert.Equal(36, bars.ElementAt(0).Beats.ElementAt(3).FrameSetting.FrameNumber);
         
         // Bar 2
-        Assert.Equal(47, bars.ElementAt(1).Beats.ElementAt(0).Frame);
-        Assert.Equal(59, bars.ElementAt(1).Beats.ElementAt(1).Frame);
-        Assert.Equal(70, bars.ElementAt(1).Beats.ElementAt(2).Frame);
-        Assert.Equal(81, bars.ElementAt(1).Beats.ElementAt(3).Frame);
+        Assert.Equal(47, bars.ElementAt(1).Beats.ElementAt(0).FrameSetting.FrameNumber);
+        Assert.Equal(59, bars.ElementAt(1).Beats.ElementAt(1).FrameSetting.FrameNumber);
+        Assert.Equal(70, bars.ElementAt(1).Beats.ElementAt(2).FrameSetting.FrameNumber);
+        Assert.Equal(81, bars.ElementAt(1).Beats.ElementAt(3).FrameSetting.FrameNumber);
         
         // Bar 3
-        Assert.Equal(93, bars.ElementAt(2).Beats.ElementAt(0).Frame);
-        Assert.Equal(104, bars.ElementAt(2).Beats.ElementAt(1).Frame);
-        Assert.Equal(115, bars.ElementAt(2).Beats.ElementAt(2).Frame);
-        Assert.Equal(126, bars.ElementAt(2).Beats.ElementAt(3).Frame);
+        Assert.Equal(93, bars.ElementAt(2).Beats.ElementAt(0).FrameSetting.FrameNumber);
+        Assert.Equal(104, bars.ElementAt(2).Beats.ElementAt(1).FrameSetting.FrameNumber);
+        Assert.Equal(115, bars.ElementAt(2).Beats.ElementAt(2).FrameSetting.FrameNumber);
+        Assert.Equal(126, bars.ElementAt(2).Beats.ElementAt(3).FrameSetting.FrameNumber);
         
         // Bar 119
-        Assert.Equal(5664, bars.ElementAt(118).Beats.ElementAt(0).Frame);
-        Assert.Equal(5675, bars.ElementAt(118).Beats.ElementAt(1).Frame);
-        Assert.Equal(5686, bars.ElementAt(118).Beats.ElementAt(2).Frame);
-        Assert.Equal(5698, bars.ElementAt(118).Beats.ElementAt(3).Frame);
+        Assert.Equal(5664, bars.ElementAt(118).Beats.ElementAt(0).FrameSetting.FrameNumber);
+        Assert.Equal(5675, bars.ElementAt(118).Beats.ElementAt(1).FrameSetting.FrameNumber);
+        Assert.Equal(5686, bars.ElementAt(118).Beats.ElementAt(2).FrameSetting.FrameNumber);
+        Assert.Equal(5698, bars.ElementAt(118).Beats.ElementAt(3).FrameSetting.FrameNumber);
         
         // Bar 120
-        Assert.Equal(5709, bars.ElementAt(119).Beats.ElementAt(0).Frame);
-        Assert.Equal(5720, bars.ElementAt(119).Beats.ElementAt(1).Frame);
-        Assert.Equal(5736, bars.ElementAt(119).Beats.ElementAt(2).Frame);
-        Assert.Equal(5747, bars.ElementAt(119).Beats.ElementAt(3).Frame);
+        Assert.Equal(5709, bars.ElementAt(119).Beats.ElementAt(0).FrameSetting.FrameNumber);
+        Assert.Equal(5720, bars.ElementAt(119).Beats.ElementAt(1).FrameSetting.FrameNumber);
+        Assert.Equal(5736, bars.ElementAt(119).Beats.ElementAt(2).FrameSetting.FrameNumber);
+        Assert.Equal(5747, bars.ElementAt(119).Beats.ElementAt(3).FrameSetting.FrameNumber);
     }
 
     private BarCounter GetSubject()

@@ -2,28 +2,28 @@
 
 public interface IFrameParser
 {
-    IEnumerable<FrameValue> ReadFrames(string frameFileContents);
+    Dictionary<int, FrameSetting> ReadFrames(string frameFileContents);
 }
 
 public class FrameParser : IFrameParser
 {
-    public IEnumerable<FrameValue> ReadFrames(string frameFileContents)
+    public Dictionary<int, FrameSetting> ReadFrames(string frameFileContents)
     {
         var frames = frameFileContents.Split(",");
 
         return frames
             .Select(frame => frame.Trim())
             .Select(trimmed => trimmed.Split(":"))
-            .Select(values => new FrameValue
+            .ToDictionary(values => Convert.ToInt32(values[0]), values => new FrameSetting
             {
-                Frame = Convert.ToInt32(values[0]),
-                Value = Convert.ToDouble(values[1].Replace("(", "").Replace(")", ""))
+                FrameNumber = Convert.ToInt32(values[0]),
+                FrameValue = Convert.ToDouble(values[1].Replace("(", "").Replace(")", ""))
             });
     }
 }
 
-public class FrameValue
+public class FrameSetting
 {
-    public int Frame { get; set; }
-    public double Value { get; set; }
+    public int FrameNumber { get; init; }
+    public double FrameValue { get; init; }
 }
