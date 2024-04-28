@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using DeforumBeatSync.Bars;
 using Moq;
 
 namespace DeforumBeatSync.Tests;

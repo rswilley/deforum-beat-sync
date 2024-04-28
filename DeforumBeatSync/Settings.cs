@@ -4,8 +4,6 @@ namespace DeforumBeatSync;
 
 public interface ISettings
 {
-    TimeSpan VideoLength { get; init; }
-    int Bpm { get; init; }
     int Fps { get; init; }
     int PromptLengthInSeconds { get; init; }
     int BarFrameCount { get; init; }
@@ -22,10 +20,6 @@ public interface ISettings
 
 public class Settings : ISettings
 {
-    [JsonPropertyName("videoLength")]
-    public TimeSpan VideoLength { get; init; }
-    [JsonPropertyName("bpm")]
-    public int Bpm { get; init; }
     [JsonPropertyName("fps")]
     public int Fps { get; init; }
     [JsonPropertyName("promptLengthInSeconds")]

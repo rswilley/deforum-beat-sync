@@ -2,7 +2,7 @@
 
 namespace DeforumBeatSync.Section;
 
-public class SectionSetting
+public class SectionEntity
 {
     [JsonPropertyName("startTime")]
     public TimeSpan StartTime { get; init; }

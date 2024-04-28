@@ -1,0 +1,76 @@
+﻿{
+  "trackLength": "00:03:59.568",
+  "bpm": 128,
+  "sections": [
+    {
+      "startTime": "00:00:00",
+      "type": "INTRO",
+      "notes": ""
+    },
+    {
+      "startTime": "00:00:13.732",
+      "type": "BREAKDOWN",
+      "notes": ""
+    },
+    {
+      "startTime": "00:00:14.636",
+      "type": "CHORUS",
+      "notes": ""
+    },
+    {
+      "startTime": "00:00:22.607",
+      "type": "BUILDUP",
+      "notes": ""
+    },
+    {
+      "startTime": "00:00:29.635",
+      "type": "CHORUS",
+      "notes": ""
+    },
+    {
+      "startTime": "00:00:55.919",
+      "type": "BREAKDOWN",
+      "notes": ""
+    },
+    {
+      "startTime": "00:00:59.620",
+      "type": "CHORUS",
+      "notes": ""
+    },
+    {
+      "startTime": "00:01:25.779",
+      "type": "BREAKDOWN",
+      "notes": ""
+    },
+    {
+      "startTime": "00:01:29.654",
+      "type": "CHORUS",
+      "notes": ""
+    },
+    {
+      "startTime": "00:02:29.650",
+      "type": "BREAKDOWN",
+      "notes": ""
+    },
+    {
+      "startTime": "00:02:37.308",
+      "type": "BUILDUP",
+      "notes": ""
+    },
+    {
+      "startTime": "00:02:55.921",
+      "type": "BREAKDOWN",
+      "notes": ""
+    },
+    {
+      "startTime": "00:02:59.633",
+      "type": "CHORUS",
+      "notes": ""
+    },
+    {
+      "startTime": "00:03:28.200",
+      "type": "CHORUS",
+      "notes": "Impact let's go"
+    }
+  ] 
+}

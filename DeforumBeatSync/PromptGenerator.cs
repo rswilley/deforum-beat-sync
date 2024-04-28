@@ -1,25 +1,27 @@
 ﻿using System.Text;
+using DeforumBeatSync.Section;
+using DeforumBeatSync.Track;
 
 namespace DeforumBeatSync;
 
 public interface IPromptGenerator
 {
-    PromptGeneratorResult GetPrompts(Dictionary<int, SectionModel> sections, ISettings settings);
+    PromptGeneratorResult GetPrompts(TrackModel track, ISettings settings);
 }
 
 public class PromptGenerator : IPromptGenerator
 {
-    public PromptGeneratorResult GetPrompts(Dictionary<int, SectionModel> sections, ISettings settings)
+    public PromptGeneratorResult GetPrompts(TrackModel track, ISettings settings)
     {
-        var totalSeconds = settings.VideoLength.TotalSeconds;
+        var totalSeconds = track.TrackLength.TotalSeconds;
         var totalFrames = totalSeconds * settings.Fps;
         
         var prompts = new Dictionary<string, string>();
         var movementSchedule = new MovementSchedule();
 
-        for (int sectionIndex = 0; sectionIndex < sections.Count; sectionIndex++)
+        for (int sectionIndex = 0; sectionIndex < track.Sections.Count; sectionIndex++)
         {
-            var currentSection = sections[sectionIndex];
+            var currentSection = track.Sections[sectionIndex];
             var currentSectionFrame = GetFrameFromTime(currentSection.StartTime, settings.Fps);
 
             HandleSectionType(currentSection, movementSchedule, currentSectionFrame, settings);

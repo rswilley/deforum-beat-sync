@@ -1,4 +1,7 @@
-﻿namespace DeforumBeatSync.Tests;
+﻿using DeforumBeatSync.Section;
+using DeforumBeatSync.Track;
+
+namespace DeforumBeatSync.Tests;
 
 public class PromptGeneratorTests
 {
@@ -18,7 +21,11 @@ public class PromptGeneratorTests
         };
         
         var subject = GetSubject();
-        var result = subject.GetPrompts(sections, new SettingsFake
+        var result = subject.GetPrompts(new TrackModel
+        {
+            TrackLength = new TimeSpan(0, 0, 30),
+            Sections = sections
+        }, new SettingsFake
         {
             PromptLengthInSeconds = 30
         });
@@ -42,7 +49,11 @@ public class PromptGeneratorTests
         };
         
         var subject = GetSubject();
-        var result = subject.GetPrompts(sections, new SettingsFake
+        var result = subject.GetPrompts(new TrackModel
+        {
+            TrackLength = new TimeSpan(0, 0, 30),
+            Sections = sections
+        }, new SettingsFake
         {
             PromptLengthInSeconds = 30
         });

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using DeforumBeatSync.Bars;
+using DeforumBeatSync.Extensions;
 
 namespace DeforumBeatSync;
 
@@ -53,9 +54,9 @@ public class Schedule
         });
     }
     
-    public string StrengthSchedule => GetScheduleAsString(_strength);
-    public string TranslationZSchedule => GetScheduleAsString(_translationZSchedule);
-    public string TranslationYSchedule => GetScheduleAsString(_translationYSchedule);
+    public string StrengthSchedule => _strength.ToSchedule();
+    public string TranslationZSchedule => _translationZSchedule.ToSchedule();
+    public string TranslationYSchedule => _translationYSchedule.ToSchedule();
 
     public void HandleStrength(Beat beat)
     {
@@ -151,14 +152,4 @@ public class Schedule
             FrameValue = 0
         }
     };
-    
-    private string GetScheduleAsString(IEnumerable<FrameSetting> items)
-    {
-        var sb = new StringBuilder();
-        foreach (var item in items)
-        {
-            sb.Append($"{item.FrameNumber}: ({item.FrameValue}), ");
-        }
-        return sb.ToString().TrimEnd(',').TrimEnd(' ');
-    }
 }

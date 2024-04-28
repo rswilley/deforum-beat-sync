@@ -1,4 +1,4 @@
-﻿namespace DeforumBeatSync;
+﻿namespace DeforumBeatSync.Bars;
 
 public interface IBarCounter
 {
