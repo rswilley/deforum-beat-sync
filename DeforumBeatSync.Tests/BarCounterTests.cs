@@ -253,7 +253,7 @@ public class BarCounterTests
   5712:(0.05),  5713:(0.15),  5714:(0.16),  5715:(0.06),  5716:(0.02),  5717:(0.01),  5718:(0.01),  5719:(0.63),  5720:(0.81),  5721:(0.75),  5722:(0.54),  5723:(0.09),  5724:(0.08),  5725:(0.19),  5726:(0.08),  5727:(0.02),  5728:(0.01),  5729:(0.01),  5730:(0.00),  5731:(0.00),  5732:(0.00),  5733:(0.00),  5734:(0.01),  5735:(0.00),
   5736:(0.02),  5737:(0.01),  5738:(0.00),  5739:(0.01),  5740:(0.01),  5741:(0.00),  5742:(0.01),  5743:(0.00),  5744:(0.01),  5745:(0.01),  5746:(0.01),  5747:(0.02),  5748:(0.01)");
         
-        _fileReaderMock.Setup(x => x.ReadFile(It.IsAny<string>())).ReturnsAsync("");
+        _fileReaderMock.Setup(x => x.ReadFileAsString(It.IsAny<string>())).ReturnsAsync("");
         _frameParserMock.Setup(x => x.ReadFrames(It.IsAny<string>())).Returns(frames);
 
         var subject = GetSubject();
@@ -306,6 +306,6 @@ public class BarCounterTests
 
     private BarCounter GetSubject()
     {
-        return new BarCounter(_fileReaderMock.Object, _frameParserMock.Object, _barTypeResolverMock.Object);
+        return new BarCounter(_fileReaderMock.Object, _frameParserMock.Object, _barTypeResolverMock.Object, new SettingsFake());
     }
 }

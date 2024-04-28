@@ -10,20 +10,23 @@ public class BarCounter : IBarCounter
     private readonly IFileAdapter _fileAdapter;
     private readonly IFrameParser _frameParser;
     private readonly IBarTypeResolver _barTypeResolver;
+    private readonly ISettings _settings;
 
     public BarCounter(
         IFileAdapter fileAdapter,
         IFrameParser frameParser,
-        IBarTypeResolver barTypeResolver)
+        IBarTypeResolver barTypeResolver,
+        ISettings settings)
     {
         _fileAdapter = fileAdapter;
         _frameParser = frameParser;
         _barTypeResolver = barTypeResolver;
+        _settings = settings;
     }
     
     public async Task<IEnumerable<Bar>> GetBars(string file)
     {
-        var fileContents = await _fileAdapter.ReadFile(file);
+        var fileContents = await _fileAdapter.ReadFileAsString(file);
         var frames = _frameParser.ReadFrames(fileContents);
 
         return DetermineBars(frames);
@@ -31,16 +34,16 @@ public class BarCounter : IBarCounter
 
     private List<Bar> DetermineBars(Dictionary<int, FrameSetting> allFrames)
     {
-        const int eighthNoteFrameCount = Settings.QuarterNoteFrameCount / 2;
+        int eighthNoteFrameCount = _settings.QuarterNoteFrameCount / 2;
         
         var bars = new List<Bar>();
         var beats = new List<Beat>();
         var barNumber = 1;
         
-        for (int frameIndex = 0; frameIndex < allFrames.Count; frameIndex += Settings.QuarterNoteFrameCount)
+        for (int frameIndex = 0; frameIndex < allFrames.Count; frameIndex += _settings.QuarterNoteFrameCount)
         {
             var minFrameNumber = frameIndex - eighthNoteFrameCount;
-            var maxFrameNumber = (frameIndex + Settings.QuarterNoteFrameCount) - eighthNoteFrameCount;
+            var maxFrameNumber = (frameIndex + _settings.QuarterNoteFrameCount) - eighthNoteFrameCount;
             var quarterNoteFrame = allFrames
                 .Where(f => f.Key >= minFrameNumber && f.Key <= maxFrameNumber)
                 .OrderByDescending(f => f.Value.FrameValue)

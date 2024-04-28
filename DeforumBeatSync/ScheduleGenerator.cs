@@ -4,37 +4,35 @@ namespace DeforumBeatSync;
 
 public interface IScheduleGenerator
 {
-    Task<Schedule> GetSchedule(string filePath);
+    Task<Schedule> GetSchedule(string filePath, IDictionary<int, SectionModel> sections);
 }
 
 public class ScheduleGenerator : IScheduleGenerator
 {
     private readonly IBarCounter _barCounter;
+    private readonly ISettings _settings;
 
-    public ScheduleGenerator(IBarCounter barCounter)
+    public ScheduleGenerator(
+        IBarCounter barCounter, 
+        ISettings settings)
     {
         _barCounter = barCounter;
+        _settings = settings;
     }
 
-    public async Task<Schedule> GetSchedule(string filePath)
+    public async Task<Schedule> GetSchedule(string filePath, IDictionary<int, SectionModel> sections)
     {
-        var schedule = new Schedule();
+        var schedule = new Schedule(_settings);
         
         var bars = (await _barCounter.GetBars(filePath)).ToList();
-        for (int i = 0; i < bars.Count; i++)
+        foreach (var bar in bars)
         {
-            var nextIndex = i + 1;
-            if (nextIndex < bars.Count)
+            foreach (var beat in bar.Beats)
             {
-                //TODO
-                var nextBar = bars[nextIndex];   
-            }
-            foreach (var beat in bars[i].Beats)
-            {
-                schedule.HandleStrength(beat);
+                //schedule.HandleStrength(beat);
                 schedule.HandleTranslationZ(beat);
                 schedule.HandleTranslationY(beat);
-            } 
+            }
         }
 
         return schedule;
@@ -43,6 +41,18 @@ public class ScheduleGenerator : IScheduleGenerator
 
 public class Schedule
 {
+    private readonly ISettings _settings;
+
+    public Schedule(ISettings settings)
+    {
+        _settings = settings;
+        _strength.Add(new FrameSetting
+        {
+            FrameNumber = 0,
+            FrameValue = _settings.Strength.High
+        });
+    }
+    
     public string StrengthSchedule => GetScheduleAsString(_strength);
     public string TranslationZSchedule => GetScheduleAsString(_translationZSchedule);
     public string TranslationYSchedule => GetScheduleAsString(_translationYSchedule);
@@ -54,12 +64,12 @@ public class Schedule
             _strength.Add(new FrameSetting
             {
                 FrameNumber = beat.FrameSetting.FrameNumber,
-                FrameValue = Settings.StrengthLow
+                FrameValue = _settings.Strength.Low
             });
             _strength.Add(new FrameSetting
             {
                 FrameNumber = beat.FrameSetting.FrameNumber + 1,
-                FrameValue = Settings.StrengthHigh
+                FrameValue = _settings.Strength.High
             });   
         }
         else
@@ -67,7 +77,7 @@ public class Schedule
             _strength.Add(new FrameSetting
             {
                 FrameNumber = beat.FrameSetting.FrameNumber,
-                FrameValue = Settings.StrengthHigh
+                FrameValue = _settings.Strength.High
             });
         }
     }
@@ -121,16 +131,9 @@ public class Schedule
             });
         }
     }
-    
-    private readonly List<FrameSetting> _strength = new()
-    {
-        new FrameSetting
-        {
-            FrameNumber = 0,
-            FrameValue = Settings.StrengthHigh
-        }
-    };
-    
+
+    private readonly List<FrameSetting> _strength = new();
+
     private readonly List<FrameSetting> _translationZSchedule = new()
     {
         new FrameSetting
