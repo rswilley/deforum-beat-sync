@@ -1,0 +1,71 @@
+﻿{
+  "trackLength": "00:04:00.039",
+  "bpm": 128,
+  "sections": [
+    {
+      "startTime": "00:00:00",
+      "type": "CHORUS",
+      "notes": ""
+    },
+    {
+      "startTime": "00:00:29.109",
+      "type": "BREAKDOWN",
+      "notes": ""
+    },
+    {
+      "startTime": "00:00:30.080",
+      "type": "CHORUS",
+      "notes": ""
+    },
+    {
+      "startTime": "00:00:58.018",
+      "type": "BUILDUP",
+      "notes": ""
+    },
+    {
+      "startTime": "00:01:00.084",
+      "type": "CHORUS",
+      "notes": ""
+    },
+    {
+      "startTime": "00:01:28.292",
+      "type": "BREAKDOWN",
+      "notes": ""
+    },
+    {
+      "startTime": "00:01:29.996",
+      "type": "CHORUS",
+      "notes": ""
+    },
+    {
+      "startTime": "00:02:13.009",
+      "type": "BUILDUP",
+      "notes": ""
+    },
+    {
+      "startTime": "00:02:15.095",
+      "type": "CHORUS",
+      "notes": ""
+    },
+    {
+      "startTime": "00:02:45.072",
+      "type": "BREAKDOWN",
+      "notes": ""
+    },
+    {
+      "startTime": "00:03:18.823",
+      "type": "BUILDUP",
+      "notes": ""
+    },
+    {
+      "startTime": "00:03:26.270",
+      "type": "BREAKDOWN",
+      "notes": ""
+    },
+    {
+      "startTime": "00:03:30.005",
+      "type": "CHORUS",
+      "notes": ""
+    }
+  ]
+}

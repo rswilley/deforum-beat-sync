@@ -6,7 +6,8 @@ namespace DeforumBeatSync.Tests;
 
 public class TrackLoaderTests
 {
-    private readonly Mock<IFileAdapter> _fileAdapterMock = new Mock<IFileAdapter>();
+    private readonly Mock<IFileAdapter> _fileAdapterMock = new();
+    private readonly Mock<IFrameParser> _frameParserMock = new();
 
     [Fact]
     public async Task LoadTrackInfo_ByDefault_ReturnsSections()
@@ -29,7 +30,7 @@ public class TrackLoaderTests
             });
         
         var subject = GetSubject();
-        var track = await subject.LoadTrackInfo("sections.json", new SettingsFake());
+        var track = await subject.LoadTrackInfo("sections.json", "frames.txt", new SettingsFake());
 
         Assert.Equal(2, track.Sections.Count);
         
@@ -42,6 +43,6 @@ public class TrackLoaderTests
     
     private TrackLoader GetSubject()
     {
-        return new TrackLoader(_fileAdapterMock.Object);
+        return new TrackLoader(_fileAdapterMock.Object, _frameParserMock.Object);
     }
 }

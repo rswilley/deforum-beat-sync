@@ -26,4 +26,6 @@ public class FrameSetting
 {
     public int FrameNumber { get; init; }
     public double FrameValue { get; init; }
+    public bool UseFormula { get; init; }
+    public string Formula { get; init; }
 }

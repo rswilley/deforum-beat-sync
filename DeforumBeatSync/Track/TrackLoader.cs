@@ -2,21 +2,25 @@
 
 public interface ITrackLoader
 {
-    Task<TrackModel> LoadTrackInfo(string filePath, ISettings settings);
+    Task<TrackModel> LoadTrackInfo(string trackFilePath, string framesFilePath, ISettings settings);
 }
 
 public class TrackLoader : ITrackLoader
 {
     private readonly IFileAdapter _fileAdapter;
+    private readonly IFrameParser _frameParser;
 
-    public TrackLoader(IFileAdapter fileAdapter)
+    public TrackLoader(
+        IFileAdapter fileAdapter,
+        IFrameParser frameParser)
     {
         _fileAdapter = fileAdapter;
+        _frameParser = frameParser;
     }
     
-    public async Task<TrackModel> LoadTrackInfo(string filePath, ISettings settings)
+    public async Task<TrackModel> LoadTrackInfo(string trackFilePath, string framesFilePath, ISettings settings)
     {
-        var track = await _fileAdapter.ReadFileAsJson<TrackEntity>(filePath);
+        var track = await _fileAdapter.ReadFileAsJson<TrackEntity>(trackFilePath);
         var sections = track.Sections.Select(m =>
             new SectionModel(settings.Fps)
             {
@@ -47,11 +51,15 @@ public class TrackLoader : ITrackLoader
             sectionDictionary.Add(i, currentSection);
         }
         
+        var frameContents = await _fileAdapter.ReadFileAsString(framesFilePath);
+        var frames = _frameParser.ReadFrames(frameContents);
+        
         return new TrackModel
         {
             TrackLength = track.TrackLength,
             Bpm = track.Bpm,
-            Sections = sectionDictionary
+            Sections = sectionDictionary,
+            Frames = frames
         };
     }
 }

@@ -24,4 +24,5 @@ public class TrackModel : ITrack
     public TimeSpan TrackLength { get; init; }
     public int Bpm { get; init; }
     public Dictionary<int, SectionModel> Sections { get; init; }
+    public Dictionary<int, FrameSetting> Frames { get; init; }
 }

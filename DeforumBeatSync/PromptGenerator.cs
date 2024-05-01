@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using DeforumBeatSync.Bars;
 using DeforumBeatSync.Section;
 using DeforumBeatSync.Track;
 
@@ -24,7 +25,7 @@ public class PromptGenerator : IPromptGenerator
             var currentSection = track.Sections[sectionIndex];
             var currentSectionFrame = GetFrameFromTime(currentSection.StartTime, settings.Fps);
 
-            HandleSectionType(currentSection, movementSchedule, currentSectionFrame, settings);
+            HandleSectionType(currentSection, movementSchedule, currentSectionFrame, track.Frames, settings);
             
             prompts.Add(currentSectionFrame.ToString(), GetPromptText(currentSection, false));
             
@@ -51,13 +52,12 @@ public class PromptGenerator : IPromptGenerator
         };
     }
 
-    private static void HandleSectionType(SectionModel currentSection, MovementSchedule movementSchedule, int frameStart, ISettings settings)
+    private static void HandleSectionType(SectionModel currentSection, MovementSchedule movementSchedule, int frameStart, Dictionary<int, FrameSetting> frames, ISettings settings)
     {
         switch (currentSection.Type)
         {
             case SectionType.INTRO:
             case SectionType.OUTRO:
-            case SectionType.CHORUS:
                 movementSchedule.TranslationZ.Add(new FrameSetting
                 {
                     FrameNumber = frameStart,
@@ -78,6 +78,11 @@ public class PromptGenerator : IPromptGenerator
                     FrameNumber = frameStart,
                     FrameValue = settings.RotationZ
                 });
+                movementSchedule.StrengthSchedule.Add(new FrameSetting
+                {
+                    FrameNumber = frameStart,
+                    FrameValue = settings.Strength.Constant
+                });
                 break;
             case SectionType.BUILDUP:
                 movementSchedule.TranslationZ.Add(new FrameSetting
@@ -95,6 +100,11 @@ public class PromptGenerator : IPromptGenerator
                 {
                     FrameNumber = frameStart,
                     FrameValue = settings.RotationZ
+                });
+                movementSchedule.StrengthSchedule.Add(new FrameSetting
+                {
+                    FrameNumber = frameStart,
+                    FrameValue = settings.Strength.Constant
                 });
                 break;
             case SectionType.BREAKDOWN:
@@ -117,6 +127,40 @@ public class PromptGenerator : IPromptGenerator
                 {
                     FrameNumber = frameStart,
                     FrameValue = 0
+                });
+                movementSchedule.StrengthSchedule.Add(new FrameSetting
+                {
+                    FrameNumber = frameStart,
+                    FrameValue = settings.Strength.Constant
+                });
+                break;
+            case SectionType.CHORUS:
+                movementSchedule.TranslationZ.Add(new FrameSetting
+                {
+                    FrameNumber = frameStart,
+                    FrameValue = 0,
+                    UseFormula = true,
+                    Formula = "(-(2 * 1 / 3.141) * arctan((1 * 1 + 1) / tan(((t  + 0) * 3.141 * 128 / 60 / 24))) + 1.50)" // TODO: remove hardcoded
+                });
+                movementSchedule.RotationX.Add(new FrameSetting
+                {
+                    FrameNumber = frameStart,
+                    FrameValue = settings.RotationX
+                });
+                movementSchedule.RotationY.Add(new FrameSetting
+                {
+                    FrameNumber = frameStart,
+                    FrameValue = settings.RotationY
+                });
+                movementSchedule.RotationZ.Add(new FrameSetting
+                {
+                    FrameNumber = frameStart,
+                    FrameValue = settings.RotationZ
+                });
+                movementSchedule.StrengthSchedule.Add(new FrameSetting
+                {
+                    FrameNumber = frameStart,
+                    FrameValue = settings.Strength.Constant
                 });
                 break;
         }
@@ -160,9 +204,9 @@ public class PromptGenerator : IPromptGenerator
     private static int GetFrameFromTime(TimeOnly currentSectionStartTime, int fps)
     {
         var minutesAsSeconds = currentSectionStartTime.Minute * 60;
-        var totalSeconds = minutesAsSeconds + currentSectionStartTime.Second;
-
-        return totalSeconds * fps;
+        var totalSeconds = minutesAsSeconds + new TimeSpan(0, 0, 0, currentSectionStartTime.Second, currentSectionStartTime.Millisecond).TotalSeconds;
+        var frame = (int)Math.Floor(totalSeconds * fps);
+        return frame;
     }
 
     private static string GetPromptText(SectionModel section, bool isSubPrompt)
@@ -197,4 +241,5 @@ public class MovementSchedule
     public List<FrameSetting> RotationX = new();
     public List<FrameSetting> RotationY = new();
     public List<FrameSetting> RotationZ = new();
+    public List<FrameSetting> StrengthSchedule = new();
 }

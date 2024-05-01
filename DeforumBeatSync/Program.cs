@@ -10,7 +10,8 @@ var stopwatch = Stopwatch.StartNew();
 var fileAdapter = new FileAdapter();
 var settings = await fileAdapter.ReadFileAsJson<Settings>("settings.json");
 
-var track = await new TrackLoader(fileAdapter).LoadTrackInfo("track.json", settings);
+var frameParser = new FrameParser();
+var track = await new TrackLoader(fileAdapter, frameParser).LoadTrackInfo("track2.json", "frames.txt", settings);
 var promptResult = new PromptGenerator().GetPrompts(track, settings);
 
 var output = new StringBuilder();
@@ -22,6 +23,10 @@ output.AppendLine(JsonSerializer.Serialize(promptResult.Prompts, new JsonSeriali
 {
     WriteIndented = true
 }));
+output.AppendLine("");
+
+output.AppendLine("Strength Schedule:");
+output.AppendLine(promptResult.MovementSchedule.StrengthSchedule.ToSchedule());
 output.AppendLine("");
 
 output.AppendLine("Translation Z:");
@@ -44,18 +49,3 @@ await fileAdapter.WriteFile("output.txt", output.ToString());
 stopwatch.Stop();
 Console.WriteLine($"Finished in {stopwatch.ElapsedMilliseconds}ms!");
 Console.ReadKey();
-
-//var frameParser = new FrameParser();
-//var barTypeResolver = new BarTypeResolver();
-
-//var barCounter = new BarCounter(fileAdapter, frameParser, barTypeResolver, settings);
-
-//var scheduleGenerator = new ScheduleGenerator(barCounter, settings);
-//var schedule = await scheduleGenerator.GetSchedule("frames.txt", track.Sections);
-
-// output.AppendLine($"Strength: {schedule.StrengthSchedule}");
-// output.AppendLine("");
-// output.AppendLine($"Translation Z: {schedule.TranslationZSchedule}");
-// output.AppendLine("");
-// output.AppendLine($"Translation Y: {schedule.TranslationYSchedule}");
-// output.AppendLine("");

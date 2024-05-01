@@ -1,4 +1,5 @@
-﻿using DeforumBeatSync.Section;
+﻿using DeforumBeatSync.Bars;
+using DeforumBeatSync.Section;
 using DeforumBeatSync.Track;
 
 namespace DeforumBeatSync.Tests;
@@ -53,7 +54,8 @@ public class PromptGeneratorTests
         {
             TrackLength = new TimeSpan(0, 0, 30),
             Sections = sections
-        }, new SettingsFake
+        }, 
+            new SettingsFake
         {
             PromptLengthInSeconds = 30
         });

@@ -9,7 +9,14 @@ public static class FrameSettingListExtensions
         var sb = new StringBuilder();
         foreach (var item in frameSettings)
         {
-            sb.Append($"{item.FrameNumber}: ({item.FrameValue}), ");
+            if (item.UseFormula)
+            {
+                sb.Append($"{item.FrameNumber}: ({item.Formula}), ");
+            }
+            else
+            {
+                sb.Append($"{item.FrameNumber}: ({item.FrameValue}), ");     
+            }
         }
         return sb.ToString().TrimEnd(',').TrimEnd(' ');
     }
